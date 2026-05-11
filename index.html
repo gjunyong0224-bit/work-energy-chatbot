@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewpor([github.com](https://github.com/hhsacademic-ctrl/bio-class))t([github.com](https://github.com/hhsacademic-ctrl/bio-class/blob/main/index.html))nitial-scale=1.0" />
+  <title>중3 과학 - 일과 에너지 학습 챗봇</title>
+  <style>
+    :root {
+      --primary: #243b53;
+      --secondary: #f59e0b;
+      --accent: #e0f2fe;
+      --bg: #f5f7fb;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --white: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Noto Sans KR", sans-serif;
+      background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 100%);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 24px auto;
+      background: var(--white);
+      border-radius: 22px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+
+    .header {
+      background: var(--primary);
+      color: white;
+      padding: 28px 32px;
+      position: relative;
+    }
+
+    .header::after {
+      content: "";
+      position: absolute;
+      right: 28px;
+      top: 24px;
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      background: rgba(245, 158, 11, 0.24);
+    }
+
+    .header h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      letter-spacing: -0.03em;
+    }
+
+    .header p {
+      margin: 0;
+      color: #dbeafe;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .tabs {
+      display: flex;
+      background: #f1f5f9;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 15px;
+    }
+
+    .tab-btn.active {
+      background: var(--white);
+      color: var(--primary);
+      border-bottom: 3px solid var(--secondary);
+    }
+
+    .content {
+      display: none;
+      padding: 28px;
+    }
+
+    .content.active { display: block; }
+
+    .intro-card {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+
+    .intro-card h3 {
+      margin: 0 0 10px;
+      font-size: 17px;
+      color: #92400e;
+    }
+
+    .intro-card ol {
+      margin: 0;
+      padding-left: 22px;
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
+    .chat-display {
+      height: 360px;
+      overflow-y: auto;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .bubble {
+      max-width: 78%;
+      margin-bottom: 14px;
+      padding: 13px 16px;
+      border-radius: 18px;
+      line-height: 1.58;
+      white-space: pre-line;
+      font-size: 15px;
+    }
+
+    .ai-bubble {
+      background: #e2e8f0;
+      color: var(--text);
+      border-bottom-left-radius: 4px;
+    }
+
+    .user-bubble {
+      background: var(--primary);
+      color: white;
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+    }
+
+    .quick-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .quick-buttons button {
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      color: #1e3a8a;
+      border-radius: 999px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    input {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px 14px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #93c5fd;
+      box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.25);
+    }
+
+    #studentName { width: 110px; }
+    #studentInput { flex: 1; }
+
+    .send-btn, .download-btn, .unlock-btn, .clear-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 13px 18px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .send-btn { background: var(--primary); color: white; }
+    .download-btn { background: #16a34a; color: white; }
+    .unlock-btn { background: var(--primary); color: white; }
+    .clear-btn { background: #ef4444; color: white; }
+
+    .teacher-note {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 18px;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+      font-size: 14px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 11px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f1f5f9;
+      color: var(--primary);
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-bottom: 12px;
+    }
+
+    .small-text {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 720px) {
+      .container { margin: 0; border-radius: 0; }
+      .input-row { flex-direction: column; }
+      #studentName { width: 100%; }
+      .bubble { max-width: 92%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="header">
+      <h1>중3 과학: 일과 에너지 질문 도우미</h1>
+      <p>오늘의 핵심: 과학에서의 일은 힘을 주어 물체가 힘의 방향으로 이동할 때이고, 에너지는 일을 할 수 있는 능력입니다.</p>
+    </section>
+
+    <nav class="tabs">
+      <button class="tab-btn active" onclick="showTab('student', event)">학생 질문창</button>
+      <button class="tab-btn" onclick="showTab('teacher', event)">교사용 관리</button>
+    </nav>
+
+    <section id="student" class="content active">
+      <div class="intro-card">
+        <h3>선생님 소개 퀴즈</h3>
+        <ol>
+          <li>저는 집에서 강아지와 고양이를 둘 다 키웁니다.</li>
+          <li>물리, 화학, 생명과학, 지구과학 중 제 전공 과목은 화학입니다.</li>
+          <li>저는 23살입니다.</li>
+          <li>저는 아침에 커피를 마셔야 에너지가 나는 편입니다.</li>
+          <li>저는 예전에 영어학원에서 일한 적이 있습니다.</li>
+        </ol>
+      </div>
+
+      <div id="chatArea" class="chat-display">
+        <div class="bubble ai-bubble">안녕하세요! 오늘 배운 ‘과학에서의 일’과 ‘에너지’에 대해 질문해 보세요.
+
+예: 가방을 들고 걸어가면 일을 한 건가요?</div>
+      </div>
+
+      <div class="quick-buttons">
+        <button onclick="useQuickQuestion('가방을 들고 걸어가면 과학에서 말하는 일을 한 건가요?')">가방 들고 걷기</button>
+        <button onclick="useQuickQuestion('벽을 세게 밀었는데 움직이지 않으면 일을 한 건가요?')">벽 밀기</button>
+        <button onclick="useQuickQuestion('왜 일은 힘 곱하기 이동 거리인가요?')">W = F × s</button>
+        <button onclick="useQuickQuestion('에너지는 왜 일을 할 수 있는 능력이라고 하나요?')">에너지 뜻</button>
+        <button onclick="useQuickQuestion('커피를 마셔야 에너지가 난다는 말은 과학에서의 에너지와 같은 뜻인가요?')">일상어 vs 과학어</button>
+      </div>
+
+      <div class="input-row">
+        <input id="studentName" type="text" placeholder="이름" />
+        <input id="studentInput" type="text" placeholder="질문을 입력하세요" onkeydown="if(event.key === 'Enter') processAsk()" />
+        <button class="send-btn" onclick="processAsk()">질문</button>
+      </div>
+    </section>
+
+    <section id="teacher" class="content">
+      <div id="lockScreen" class="teacher-note">
+        <strong>교사용 관리 화면</strong><br />
+        학생 질문 로그를 확인하려면 비밀번호를 입력하세요.
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <input type="password" id="password" placeholder="비밀번호" />
+          <button class="unlock-btn" onclick="unlockTeacher()">접속</button>
+        </div>
+        <p class="small-text">기본 비밀번호: 2026</p>
+      </div>
+
+      <div id="teacherPanel" style="display:none;">
+        <div class="teacher-note">
+          <strong>수업 활용 팁</strong><br />
+          학생 질문을 보면서 ‘일상에서의 일/에너지’와 ‘과학에서의 일/에너지’를 구분했는지 확인하세요. 특히 “힘을 주었는가?”, “힘의 방향으로 이동했는가?”를 기준으로 피드백하면 좋습니다.
+        </div>
+
+        <div class="admin-actions">
+          <button class="download-btn" onclick="downloadCSV()">CSV 저장</button>
+          <button class="clear-btn" onclick="clearLogs()">로그 삭제</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>시간</th>
+              <th>학생</th>
+              <th>질문</th>
+              <th>챗봇 답변</th>
+            </tr>
+          </thead>
+          <tbody id="logBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const knowledgeBase = [
+      {
+        keywords: ['일', '정의', '과학에서 말하는 일', '과학적 일'],
+        answer: '과학에서의 일은 물체에 힘을 주고, 그 물체가 힘의 방향으로 이동했을 때를 말합니다.\n\n핵심 조건은 두 가지입니다.\n1. 물체에 힘이 작용해야 합니다.\n2. 물체가 힘의 방향으로 이동해야 합니다.'
+      },
+      {
+        keywords: ['가방', '들고', '걷', '복도'],
+        answer: '가방을 들고 수평으로 걸어갈 때, 사람이 가방을 드는 힘은 위쪽 방향입니다. 그런데 가방의 이동 방향은 앞쪽입니다.\n\n힘의 방향인 위쪽으로 이동한 거리는 0이므로, 과학에서 사람이 가방에 한 일은 0입니다.\n\n단, 가방을 바닥에서 위로 들어 올릴 때는 힘의 방향으로 이동하므로 일을 한 것입니다.'
+      },
+      {
+        keywords: ['벽', '안 움직', '움직이지', '밀었는데'],
+        answer: '벽을 세게 밀어도 벽이 움직이지 않았다면, 이동 거리가 0입니다.\n\n과학에서 일 = 힘 × 힘의 방향으로 이동한 거리이므로, 이동 거리가 0이면 한 일도 0입니다.\n\n일상적으로는 힘들 수 있지만, 과학에서 말하는 일은 아닙니다.'
+      },
+      {
+        keywords: ['문', '밀', '열'],
+        answer: '문을 손으로 밀어서 문이 밀리는 방향으로 움직였다면, 문에 일을 한 것입니다.\n\n왜냐하면 손이 문에 힘을 주었고, 문이 그 힘의 방향으로 이동했기 때문입니다.'
+      },
+      {
+        keywords: ['공식', 'w', 'f', 's', '힘 곱하기', '곱하기', '이동 거리', '일의 크기'],
+        answer: '일의 크기는 힘의 크기와 힘의 방향으로 이동한 거리를 곱해서 구합니다.\n\n일(J) = 힘(N) × 힘의 방향으로 이동한 거리(m)\n\n1N의 힘으로 물체를 1m 이동시켰을 때 한 일을 1J이라고 정했기 때문에, 몇 N의 힘으로 몇 m 이동시켰는지를 곱해서 일의 크기를 나타냅니다.'
+      },
+      {
+        keywords: ['에너지', '능력', '일을 할 수 있는 능력'],
+        answer: '에너지는 일을 할 수 있는 능력입니다.\n\n예를 들어 움직이는 공은 다른 물체를 밀어낼 수 있습니다. 즉, 공은 일을 할 수 있는 능력인 에너지를 가지고 있다고 볼 수 있습니다.'
+      },
+      {
+        keywords: ['커피', '기운', '에너지가 난다', '일상어', '과학어'],
+        answer: '일상에서 “커피를 마시면 에너지가 난다”는 말은 보통 기운이 나거나 정신이 맑아진다는 뜻입니다.\n\n하지만 과학에서 에너지는 더 정확하게 “일을 할 수 있는 능력”을 뜻합니다.\n\n즉, 일상어와 과학 용어의 의미가 조금 다릅니다.'
+      },
+      {
+        keywords: ['영어학원', '직업', '아르바이트', '일했다', '일한 적'],
+        answer: '“영어학원에서 일했다”는 말은 일상에서 쓰는 일, 즉 직업이나 노동의 의미입니다.\n\n과학에서의 일은 직업이나 노동이 아니라, 물체에 힘을 주어 그 물체가 힘의 방향으로 이동한 경우를 말합니다.'
+      },
+      {
+        keywords: ['예시', '예를', '사례'],
+        answer: '과학에서 일을 한 예시는 다음과 같습니다.\n\n1. 책상을 앞으로 밀어 책상이 앞으로 이동했다.\n2. 공을 발로 차서 공이 날아갔다.\n3. 바닥의 가방을 위로 들어 올렸다.\n\n공통점은 힘을 주었고, 물체가 힘의 방향으로 이동했다는 점입니다.'
+      }
+    ];
+
+    let logs = JSON.parse(localStorage.getItem('workEnergyLogs') || '[]');
+    renderLogs();
+
+    function showTab(id, event) {
+      document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      if (event) event.currentTarget.classList.add('active');
+    }
+
+    function useQuickQuestion(question) {
+      document.getElementById('studentInput').value = question;
+      processAsk();
+    }
+
+    function processAsk() {
+      const name = document.getElementById('studentName').value.trim() || '익명';
+      const input = document.getElementById('studentInput').value.trim();
+      if (!input) return;
+
+      addBubble('user', input);
+      document.getElementById('studentInput').value = '';
+
+      const answer = findAnswer(input);
+
+      setTimeout(() => {
+        addBubble('ai', answer);
+        saveLog(name, input, answer);
+      }, 300);
+    }
+
+    function findAnswer(input) {
+      const normalized = input.replace(/\s/g, '').toLowerCase();
+
+      for (const item of knowledgeBase) {
+        if (item.keywords.some(keyword => normalized.includes(keyword.replace(/\s/g, '').toLowerCase()))) {
+          return item.answer;
+        }
+      }
+
+      return '좋은 질문이에요. 오늘 수업의 기준으로 다시 생각해 봅시다.\n\n1. 물체에 힘이 작용했나요?\n2. 물체가 그 힘의 방향으로 이동했나요?\n\n두 조건이 모두 만족되면 과학에서 일을 했다고 말할 수 있습니다.';
+    }
+
+    function addBubble(type, text) {
+      const chatArea = document.getElementById('chatArea');
+      const bubble = document.createElement('div');
+      bubble.className = `bubble ${type}-bubble`;
+      bubble.textContent = text;
+      chatArea.appendChild(bubble);
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function saveLog(name, question, answer) {
+      const log = {
+        time: new Date().toLocaleString('ko-KR'),
+        name,
+        question,
+        answer
+      };
+      logs.unshift(log);
+      localStorage.setItem('workEnergyLogs', JSON.stringify(logs));
+      renderLogs();
+    }
+
+    function renderLogs() {
+      const tbody = document.getElementById('logBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      logs.forEach(log => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${escapeHTML(log.time)}</td>
+          <td>${escapeHTML(log.name)}</td>
+          <td>${escapeHTML(log.question)}</td>
+          <td>${escapeHTML(log.answer)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function unlockTeacher() {
+      const pw = document.getElementById('password').value;
+      if (pw === '2026') {
+        document.getElementById('lockScreen').style.display = 'none';
+        document.getElementById('teacherPanel').style.display = 'block';
+      } else {
+        alert('비밀번호가 틀렸습니다.');
+      }
+    }
+
+    function downloadCSV() {
+      let csv = '\ufeff시간,학생,질문,챗봇답변\n';
+      logs.forEach(log => {
+        csv += `"${sanitizeCSV(log.time)}","${sanitizeCSV(log.name)}","${sanitizeCSV(log.question)}","${sanitizeCSV(log.answer)}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = '중3_일과에너지_학생질문로그.csv';
+      link.click();
+    }
+
+    function clearLogs() {
+      if (!confirm('학생 질문 로그를 삭제할까요?')) return;
+      logs = [];
+      localStorage.removeItem('workEnergyLogs');
+      renderLogs();
+    }
+
+    function sanitizeCSV(text) {
+      return String(text).replace(/"/g, '""').replace(/\n/g, ' ');
+    }
+
+    function escapeHTML(text) {
+      return String(text)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+  </script>
+</body>
+</html>
