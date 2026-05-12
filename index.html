@@ -197,7 +197,7 @@
   <main class="wrap">
     <header>
       <h1>중3 과학: 일과 에너지</h1>
-      <p>교과서 122쪽부터 135쪽까지의 개념을 바탕으로 질문하고 확인하는 학습 챗봇입니다.</p>
+      <p>교과서 122쪽부터 135쪽까지의 개념을 바탕으로 질문하고 문제를 풀어 보는 학습 챗봇입니다.</p>
     </header>
 
     <nav class="tabs">
@@ -234,8 +234,7 @@
         <button onclick="quickAsk('위치 에너지와 운동 에너지는 무엇인가요?')">위치/운동 에너지</button>
         <button onclick="quickAsk('중력에 의한 위치 에너지의 크기는 무엇에 비례하나요?')">위치 에너지 크기</button>
         <button onclick="quickAsk('운동 에너지의 크기는 무엇에 비례하나요?')">운동 에너지 크기</button>
-        <button class="quizBtn" onclick="makeQuiz('work')">형성평가 문제 1</button>
-        <button class="quizBtn" onclick="makeQuiz('energy')">형성평가 문제 2</button>
+        <button class="quizBtn" onclick="makeRandomQuiz()">문제 풀기</button>
         <button class="quizBtn" onclick="showAnswer()">정답 보기</button>
       </div>
 
@@ -580,12 +579,19 @@
       const list = quizzes[type];
       const quiz = list[Math.floor(Math.random() * list.length)];
       currentQuiz = quiz;
-      addBubble('bot', '형성평가 문제입니다.' + String.fromCharCode(10) + String.fromCharCode(10) + quiz.q + String.fromCharCode(10) + String.fromCharCode(10) + '답을 입력해 보세요. 정답을 바로 보려면 정답 보기 버튼을 누르세요.');
+      addBubble('bot', '문제입니다.' + String.fromCharCode(10) + String.fromCharCode(10) + quiz.q + String.fromCharCode(10) + String.fromCharCode(10) + '답을 입력해 보세요. 정답을 바로 보려면 정답 보기 버튼을 누르세요.');
+    }
+
+    function makeRandomQuiz() {
+      const all = quizzes.work.concat(quizzes.energy);
+      const quiz = all[Math.floor(Math.random() * all.length)];
+      currentQuiz = quiz;
+      addBubble('bot', '문제입니다.' + String.fromCharCode(10) + String.fromCharCode(10) + quiz.q + String.fromCharCode(10) + String.fromCharCode(10) + '답을 입력해 보세요. 정답을 바로 보려면 정답 보기 버튼을 누르세요.');
     }
 
     function showAnswer() {
       if (!currentQuiz) {
-        addBubble('bot', '먼저 형성평가 문제 1 또는 형성평가 문제 2 버튼을 눌러 문제를 받아 보세요.');
+        addBubble('bot', '먼저 문제 풀기 버튼을 눌러 문제를 받아 보세요.');
         return;
       }
       addBubble('bot', currentQuiz.explain);
