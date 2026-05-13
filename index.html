@@ -276,7 +276,7 @@
           <input type="password" id="password" placeholder="비밀번호">
           <button class="btn" onclick="unlockTeacher()">접속</button>
         </div>
-        <p class="small">기본 비밀번호: 2026</p>
+        <p class="small">비밀번호는 담당 교사에게 문의하세요.</p>
       </div>
       <div id="teacherPanel" style="display:none;">
         <div class="note">
@@ -900,7 +900,7 @@ ${force}N × ${meter}m = ${pretty(work)}J
     }
 
     function unlockTeacher() {
-      if (document.getElementById('password').value === '2026') {
+      if (document.getElementById('password').value === '2026304') {
         document.getElementById('lock').style.display = 'none';
         document.getElementById('teacherPanel').style.display = 'block';
       } else {
